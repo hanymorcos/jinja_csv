@@ -1,0 +1,54 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: GivenTitle{{data.api_name_noSpaces}}
+  contact:
+    email: hme_helpdesk_support@title.com
+host: my.api.com
+basePath: /hme-apis/giventitle-{{data.api_name_dashes}}
+tags: []
+schemes:
+  - https
+securityDefinitions: {}
+paths:
+  '/{{data.select_by}}':
+    get:
+      summary: get Given API {{data.api_name}} Results by {{data.select_by}}
+      description: Returns Given API {{data.api_name}} Results by {{data.select_by}}
+      operationId: getGivenAPI{{data.api_name_noSpaces}}
+      produces:
+        - application/json
+      parameters:
+        - name: MainID
+          in: path
+          description: MainID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successfully returned Given API {{data.api_name}}
+          headers: {}
+          schema:
+            $ref: '#/definitions/PackageName'
+        '400':
+          description: Invalid request
+          headers: {}
+          schema:
+            $ref: '#/definitions/400Error1'
+definitions:
+  PackageName:
+    type: object
+    properties:
+     {{data.json_object_header}}:
+        type: array
+        items:
+          type: object
+          properties:
+          {%- for key,value in data.data_table.iterrows() %}
+            {{value['name']}}:
+              type: {{value['type']}}
+              example: "{{value['value']}}"
+              {%- if value['length']|int != 0 %}
+              maxLength: {{value['length']|int}}
+              {%- endif %}     
+          {%- endfor %}
